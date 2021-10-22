@@ -3,14 +3,11 @@ const { join } = require('path');
 const { red } = require('chalk');
 const { prompt } = require('inquirer');
 const { exec, echo } = require('shelljs');
-const {
-  getTemplateQuestionList,
-  generateTemplate,
-} = require('@iosecret/template');
+const { getTemplateQuestionList, generateTemplate } = require('@iosecret/template');
 const { existsSync, readJsonSync, writeJsonSync } = require('fs-extra');
-const iwrVersion = require('../package.json').version;
+const localPackageJson = require('../package.json');
 
-const iwrCreate = program => {
+const iwrCreate = (program) => {
   const templateList = getTemplateQuestionList();
 
   const questions = [
@@ -18,39 +15,39 @@ const iwrCreate = program => {
       type: 'input',
       name: 'name',
       message: '项目名称(英文)：',
-      default: 'water-ui',
+      default: 'water-ui'
     },
     {
       type: 'input',
       name: 'description',
       message: '项目描述：',
-      default: 'react 项目',
+      default: 'react 项目'
     },
     {
       type: 'input',
       name: 'version',
       message: '项目初始版本：',
-      default: '1.0.0',
+      default: '1.0.0'
     },
     {
       type: 'input',
       name: 'author',
       message: '作者：',
-      default: 'iwr',
+      default: 'iwr'
     },
     {
       type: 'input',
       name: 'port',
       message: '启动端口',
-      default: '8001',
+      default: '8001'
     },
     {
       type: 'list',
       name: 'template',
       message: '选择模板：',
       choices: templateList,
-      default: templateList[0],
-    },
+      default: templateList[0]
+    }
   ];
 
   program
@@ -60,7 +57,7 @@ const iwrCreate = program => {
       const spinner = ora('🌰 工程初始化中 \n');
 
       prompt(questions)
-        .then(options => {
+        .then((options) => {
           const { name } = options;
 
           spinner.start();
@@ -68,11 +65,11 @@ const iwrCreate = program => {
           // 复制项目模板
           generateTemplate(process.cwd(), options);
 
-          // 更新 iwr 版本到最新
+          // 更新 iosecret 版本到最新
           const packageJson = join(process.cwd(), `${name}/package.json`);
           if (existsSync(packageJson)) {
             const json = readJsonSync(packageJson);
-            json.devDependencies.iwr = `^${iwrVersion}`;
+            json.devDependencies[localPackageJson.name] = `^${localPackageJson.version}`;
             writeJsonSync(packageJson, json, { spaces: 2 });
           }
 
@@ -80,14 +77,14 @@ const iwrCreate = program => {
 
           // 执行 npm i 脚本
           spinner.text = '🍉 依赖安装中... \n';
-          exec(`cd ${name} && npm i`, code => {
+          exec(`cd ${name} && npm i`, (code) => {
             spinner.text = code !== 0 ? '💣 依赖安装失败' : '🇨🇳 依赖安装成功';
             setTimeout(() => {
               spinner.stop();
             }, 800);
           });
         })
-        .catch(error => {
+        .catch((error) => {
           spinner.stop();
           echo(error.isTtyError ? `${red('>')} 当前环境暂不支持` : error);
         });

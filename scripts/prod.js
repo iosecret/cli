@@ -1,10 +1,10 @@
-const webpackProdConfig = require(`../lib/build/webpack.prod.js`);
 const webpack = require('webpack');
-
 const { red } = require('chalk');
-const { getApp } = require('../lib/utils/getConfig');
 
-const iwrProd = program => {
+const { getApp } = require('../lib/utils/app');
+const webpackProdConfig = require('../lib/build/webpack.prod');
+
+const iwrProd = (program) => {
   program
     .command('prod')
     .description('🍌 生产环境构建')
@@ -18,13 +18,10 @@ const iwrProd = program => {
         return;
       }
 
+      const analyzerPort = analyzer ? (typeof +analyzer === 'number' ? analyzer : 8989) : null;
       const webpackConfig = webpackProdConfig({
         ...appConfig,
-        analyzerPort: analyzer
-          ? typeof +analyzer === 'number'
-            ? analyzer
-            : 8989
-          : null,
+        analyzerPort
       });
 
       const buildStamp = Date.now();
@@ -37,8 +34,7 @@ const iwrProd = program => {
             return;
           }
 
-          stats.hasErrors() &&
-            console.error(stats.toString({ colors: true, chunks: false }));
+          stats.hasErrors() && console.error(stats.toString({ colors: true, chunks: false }));
 
           console.log('\n> 构建异常 \n');
         } else {

@@ -1,10 +1,10 @@
 const { red } = require('chalk');
 const webpack = require('webpack');
 
-const webpackUmdConfig = require(`../lib/build/webpack.umd.js`);
-const { getApp } = require('../lib/utils/getConfig');
+const webpackUmdConfig = require('../lib/build/webpack.umd');
+const { getApp } = require('../lib/utils/app');
 
-const iwrUmd = program => {
+const iwrUmd = (program) => {
   program
     .command('umd')
     .description('🍎 umd 包构建')
@@ -18,7 +18,7 @@ const iwrUmd = program => {
       }
 
       const webpackConfig = webpackUmdConfig({
-        ...appConfig,
+        ...appConfig
       });
 
       const buildStamp = Date.now();
@@ -31,8 +31,7 @@ const iwrUmd = program => {
             return;
           }
 
-          stats.hasErrors() &&
-            console.error(stats.toString({ colors: true, chunks: false }));
+          stats.hasErrors() && console.error(stats.toString({ colors: true, chunks: false }));
 
           console.log('\n> 构建异常 \n');
         } else {

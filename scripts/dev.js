@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
 const webpackDevConfig = require('../lib/build/webpack.dev');
-const { getApp } = require('../lib/utils/getConfig');
+const { getApp } = require('../lib/utils/app');
 
 const iwrDev = (program) => {
   program

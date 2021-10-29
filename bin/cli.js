@@ -26,12 +26,11 @@ iosecretCreate(program);
 // 规则生成器
 iosecretRule(program);
 
+const lolVersion = `\n${textToLolcat(`iosecret  ${version}`)}`;
+
 program
-  .version(textToLolcat(`iosecret ${version}`))
-  .usage(
-    `
-    ${textToLolcat(`iosecret ${version}`)}`
-  )
+  .version(lolVersion)
+  .usage(lolVersion)
   .description(
     `Params:
   dev:

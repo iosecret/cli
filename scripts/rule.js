@@ -12,29 +12,29 @@ const questions = [
     name: 'package',
     message: '包管理工具：',
     choices: ['yarn', 'npm'],
-    default: 'yarn',
+    default: 'yarn'
   },
   {
     type: 'confirm',
     name: 'isEslint',
     message: '是否启用 eslint：',
-    default: 'Y',
+    default: 'Y'
   },
   {
     type: 'confirm',
     name: 'isCommitLint',
     message: '是否启用 commitlint：',
-    default: 'Y',
+    default: 'Y'
   },
   {
     type: 'confirm',
     name: 'isPrettier',
     message: '是否启用 prettier：',
-    default: 'Y',
-  },
+    default: 'Y'
+  }
 ];
 
-const iwrRule = program => {
+const iwrRule = (program) => {
   program
     .command('rule')
     .description('🌰 规则生成（eslint、commitlint、prettier)')
@@ -46,39 +46,30 @@ const iwrRule = program => {
 
       // check project is existed
       if (!existsSync(packageFile)) {
-        echo(`${green(`>`)} 请先初始化工程，执行如下脚本：`);
-        echo(`${green(`>`)} iwr create \n`);
+        echo(`${green('>')} 请先初始化工程，执行如下脚本：`);
+        echo(`${green('>')} iwr create \n`);
         process.exit(-1);
       }
 
-      prompt(questions).then(
-        ({ package, isEslint, isCommitLint, isPrettier }) => {
-          generateRule(root, { isEslint, isCommitLint, isPrettier }).then(
-            packages => {
-              // install dependencies
-              const spinner = ora(`🍉 安装依赖中... \n`);
-              spinner.start();
+      prompt(questions).then(({ package, isEslint, isCommitLint, isPrettier }) => {
+        generateRule(root, { isEslint, isCommitLint, isPrettier }).then((packages) => {
+          // install dependencies
+          const spinner = ora('🍉 安装依赖中... \n');
+          spinner.start();
 
-              exec(
-                `${package} ${package === 'npm' ? 'i' : 'add'} ${packages.join(
-                  ' ',
-                )} -D ${package === 'yarn' ? '-W' : ''}`,
-                code => {
-                  if (code !== 0) {
-                    spinner.stop();
-                    process.exit(-1);
-                  }
+          exec(`${package} ${package === 'npm' ? 'i' : 'add'} ${packages.join(' ')} -D ${package === 'yarn' ? '-W' : ''}`, (code) => {
+            if (code !== 0) {
+              spinner.stop();
+              process.exit(-1);
+            }
 
-                  spinner.text = '🍎 生成 eslint/commitlint 成功 \n';
-                  setTimeout(() => {
-                    spinner.stop();
-                  }, 800);
-                },
-              );
-            },
-          );
-        },
-      );
+            spinner.text = '🍎 生成 eslint/commitlint 成功 \n';
+            setTimeout(() => {
+              spinner.stop();
+            }, 800);
+          });
+        });
+      });
     });
 };
 

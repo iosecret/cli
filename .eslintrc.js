@@ -10,6 +10,7 @@ module.exports = {
     'object-curly-newline': 0,
     'no-restricted-syntax': 0,
     'import/no-dynamic-require': 0,
+    '@typescript-eslint/indent': 0,
     '@typescript-eslint/comma-dangle': 0,
     '@typescript-eslint/no-unused-expressions': 0
   }
